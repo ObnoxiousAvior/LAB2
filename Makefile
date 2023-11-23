@@ -8,3 +8,4 @@ main.o: main.c
 	gcc -c main.c
 clear:
 	rm *.o
+	rm LAB2

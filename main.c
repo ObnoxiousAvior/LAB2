@@ -1,108 +1,81 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "func.h"
+
+/*RECOMENDUYU POMENYAT VID PRINTFof CHTOBI NE SPALILI CHO VI VORUETE BESPLATNO BEZ SMS I REGISTRACII. 
+/ TAKJE STOIT UBRAT' VSE system("clear")
+  YA OTVETSTVENNOST' ZA VASHI OCENKI S SEBYA SNIMAUYU*/
+
+// DEFINING GLOBAL VARIABLES
+
+medicine *arr = NULL; // Database structure array
+int n = 0; // Amount of variables
 
 int main()
 {
-	system("clear"); //Clearing the contents of the terminal
+	system("clear"); // Clearing the contents of a terminal
+
+	int stopCycle = 1; // Flag stopping the main loop
 	
-	medicine *arr = NULL;
-	int n = 0;
-	
-	int stopCycle = 1;
-	
-	int tempKey = 0;
+	int key = 0;
 	
 	while(stopCycle){
-		int key = 0;
-		
-		key += tempKey;
-		tempKey = 0;
-		
-		if (!key)
-		{
-			printf("What would you like to do?\n|1. Create a database \n|2. Print the database \n|3. Search in the database\n|0. Exit the program\n");
+	
+		if (!key){
+			printf("What would you like to do?\n|1. Create a database \n|2. Print the database \n|3. Search in the database \n|0. Exit the program\n");
 			scanf("%i", &key);
 		}
+		
 		system("clear");
 		
 		switch (key)
 		{
-			case 1:{
-				int key2;
-				
-				printf("Do you want to:\n|1. Write the new one \n|2. Load an existing one from a file\n");
-				scanf("%i", &key2);
-				
-				system("clear");
-				
-				if (key2==1) {	
-					create(&arr, &n);
-					if(!arr) 
-					{
-						printf("!ERROR CREATING THE DATABASE!\n");
-						stopCycle = 0;
-						break;
-					}
-					else
-					{
-						printf("Created %d entries\n\n", n);
-					}
-					write(arr,n);
-					}
-				else if(key2==2){
-					read(&arr, &n);
-					if(!arr) 
-					{
-						printf("ERROR READING THE DATABASE\n");
-						stopCycle = 0;
-						break;
-					}
-					else
-					{
-						printf("Loaded %d entries\n\n", n);
-					}
-				}
+			case 1:
+				chooseCreationMethod(); // Function defined for choosing the way you create a DB
+				key = 0;
 				break;
-			}
+				
 			case 2:
 				if(!arr) 
 					{
-						int key3;
-						printf("Couldn't find the database. Would you like to create one?\n|1 - Yes\n|2 - No\n");
-						scanf("%i", &key3);
-						if(key3==1) tempKey=1;
-						else stopCycle = 0;
-						break;
+						int check = whereDatabase();
+						
+						if (check == 1) stopCycle = 0; // If user stops
+						else key = 0; // In case of an error of a successful execution
 					}
-					else
+				else
 					{
-						for(int i = 0; i<n; i++) printf("Name: %s; Price: %0.2f; Dose: %i;\n", arr[i].name, arr[i].price, arr[i].dose);
+						for (int i = 0; i<n; i++) printf(ENTRYPRINT); // ENTRYPRINT is defined in func.h
+						
 						printf("%c",'\n');
+						key = 0;
 					}
-				
 				break;
+				
 			case 3:
 				if(!arr) 
 					{
-						int key3;
-						printf("Couldn't find the database. Would you like to create one?\n|1 - Yes\n|2 - No\n");
-						scanf("%i", &key3);
-						if(key3==1) tempKey=1;
-						else stopCycle = 0;
-						break;
+						int check = whereDatabase();
+						
+						if (check == 1) stopCycle = 0;
+						else key = 0;
 					}
-					else
+				else
 					{
 						search(arr,n);
+						key = 0;
+						system("clear");
 					}
 				break;
+				
 			default:
 				stopCycle = 0;
 				break;
+			}
 		}
-	}
-	if (arr) free(arr);
+		
+		
+	if (arr) free(arr); // If dynamic memory is allocated for arr, free the utilized memory
+
 	system("clear");
+
 	return 0;
 }
